@@ -27,7 +27,14 @@ link() {
   echo "link: $dest -> $src"
 }
 
+# Oh My Zsh (なければインストール。.zshrc は上書きさせない)
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  RUNZSH=no KEEP_ZSHRC=yes sh -c \
+    "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+fi
+
 link .zshrc     "$HOME/.zshrc"
+link zsh        "$HOME/.zsh"
 link .zprofile  "$HOME/.zprofile"
 link .gitconfig "$HOME/.gitconfig"
 link ghostty/config.ghostty \
