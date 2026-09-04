@@ -11,6 +11,12 @@ brew "webp"
 brew "libtiff"
 # Open-source, cross-platform JavaScript runtime environment
 brew "node"
+# Fish-like autosuggestions for zsh
+brew "zsh-autosuggestions"
+# Fish shell like syntax highlighting for zsh
+brew "zsh-syntax-highlighting"
+# ZSH plugin that reminds you to use existing aliases
+brew "zsh-you-should-use"
 # Supabase CLI
 brew "supabase/tap/supabase", trusted: true
 # Command-line interface for 1Password
