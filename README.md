@@ -9,6 +9,7 @@ macOS 用の個人設定ファイル。`install.sh` が各ファイルを `$HOME
 | `.zshrc` | zsh の対話シェル設定(エイリアスなど) |
 | `.zprofile` | ログインシェル設定(PATH、Homebrew) |
 | `.gitconfig` | Git のユーザー情報と credential helper |
+| `ghostty/config.ghostty` | Ghostty ターミナルの設定(リンク先: `~/Library/Application Support/com.mitchellh.ghostty/`) |
 | `Brewfile` | Homebrew でインストールしているパッケージ一覧 |
 
 ## 新しいマシンでのセットアップ
