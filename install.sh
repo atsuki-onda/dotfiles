@@ -38,6 +38,7 @@ link zsh        "$HOME/.zsh"
 link .zprofile  "$HOME/.zprofile"
 link .gitconfig "$HOME/.gitconfig"
 link claude/CLAUDE.md "$HOME/.claude/CLAUDE.md"
+link starship/starship.toml "$HOME/.config/starship.toml"
 link ghostty/config.ghostty \
   "$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
 

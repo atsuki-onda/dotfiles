@@ -11,6 +11,8 @@ brew "webp"
 brew "libtiff"
 # Open-source, cross-platform JavaScript runtime environment
 brew "node"
+# Cross-shell prompt for astronauts
+brew "starship"
 # Fish-like autosuggestions for zsh
 brew "zsh-autosuggestions"
 # Fish shell like syntax highlighting for zsh

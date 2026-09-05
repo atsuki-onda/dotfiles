@@ -1,5 +1,7 @@
 # .zshrc は読み込み専用の目次。実際の設定は ~/.zsh/ (= dotfiles/zsh/) に書く。
 source ~/.zsh/ohmy.zsh
+source ~/.zsh/starship.zsh
+source ~/.zsh/prompt.zsh
 source ~/.zsh/aliases.zsh
 source ~/.zsh/autosuggestions.zsh
 source ~/.zsh/you-should-use.zsh
