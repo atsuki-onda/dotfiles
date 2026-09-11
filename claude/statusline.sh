@@ -170,6 +170,15 @@ __norm_int() {
     *) printf '%s' "$v" ;;
   esac
 }
+__fmt_pct() {
+  # Percentage fields arrive as floats and can carry binary-float noise
+  # (e.g. 28.000000000000004). Drop the fraction, matching the context-window
+  # percentage above. An empty field stays empty so a missing value renders
+  # blank rather than a misleading 0%.
+  local v="$1"
+  [ -z "$v" ] && return
+  __norm_int "$v"
+}
 __fmt_token_compact() {
   local n
   n="$(__norm_int "$1")"
@@ -292,7 +301,7 @@ __reset
 printf '\n'
 __reset
 __emit '39;49' '5h: '
-__v="$(__field 'rate_limits.five_hour.used_percentage')"
+__v="$(__fmt_pct "$(__field 'rate_limits.five_hour.used_percentage')")"
 __emit '39;49' "$__v"
 __emit '39;49' '% '
 __v="$(__field 'rate_limits.five_hour.resets_at')"
@@ -301,7 +310,7 @@ __emit '39;49' "$__out"
 __emit '49' ' '
 __emit '49' ' '
 __emit '39;49' ' 7d: '
-__v="$(__field 'rate_limits.seven_day.used_percentage')"
+__v="$(__fmt_pct "$(__field 'rate_limits.seven_day.used_percentage')")"
 __emit '39;49' "$__v"
 __emit '39;49' '% '
 __v="$(__field 'rate_limits.seven_day.resets_at')"
