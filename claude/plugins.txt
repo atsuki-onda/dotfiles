@@ -1,0 +1,7 @@
+# Claude Code のプラグイン。1 行に 1 つ、<plugin>@<marketplace> 形式で書く。
+# marketplace は claude/marketplaces.txt に登録しておく。
+context7@claude-plugins-official
+playwright@claude-plugins-official
+commit-commands@claude-plugins-official
+typescript-lsp@claude-plugins-official
+swift-lsp@claude-plugins-official

@@ -1,6 +1,8 @@
 #!/bin/sh
-# dotfiles を各所にシンボリックリンクする。
+# links.conf の定義どおりに dotfiles をシンボリックリンクする。
 # 既存の実ファイルは *.bak として退避してからリンクを張る(冪等)。
+#
+# 新しいマシンの初期設定は bootstrap.sh を使う。このスクリプトはリンクだけを扱う。
 set -eu
 
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -9,6 +11,11 @@ DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 link() {
   src="$DOTFILES_DIR/$1"
   dest="$2"
+
+  if [ ! -e "$src" ]; then
+    echo "skip: $src が無い"
+    return
+  fi
 
   # すでに正しいリンクなら何もしない
   if [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then
@@ -27,20 +34,9 @@ link() {
   echo "link: $dest -> $src"
 }
 
-# Oh My Zsh (なければインストール。.zshrc は上書きさせない)
-if [ ! -d "$HOME/.oh-my-zsh" ]; then
-  RUNZSH=no KEEP_ZSHRC=yes sh -c \
-    "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-fi
-
-link .zshrc     "$HOME/.zshrc"
-link zsh        "$HOME/.zsh"
-link .zprofile  "$HOME/.zprofile"
-link .gitconfig "$HOME/.gitconfig"
-link claude/CLAUDE.md "$HOME/.claude/CLAUDE.md"
-link claude/statusline.sh "$HOME/.claude/statusline.sh"
-link starship/starship.toml "$HOME/.config/starship.toml"
-link ghostty/config.ghostty \
-  "$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
+while IFS='|' read -r src dest; do
+  case "$src" in ''|\#*) continue ;; esac
+  link "$src" "$HOME${dest#\~}"
+done < "$DOTFILES_DIR/links.conf"
 
 echo "done."

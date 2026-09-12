@@ -3,6 +3,8 @@ tap "supabase/tap"
 brew "ffmpeg"
 # GitHub command-line tool
 brew "gh"
+# Lightweight and flexible command-line JSON processor
+brew "jq"
 # Distributed revision control system
 brew "git"
 # Image format providing lossless and lossy compression for web images
@@ -23,8 +25,6 @@ brew "zsh-you-should-use"
 brew "supabase/tap/supabase", trusted: true
 # Command-line interface for 1Password
 cask "1password-cli"
-# Terminal-based AI coding assistant
-cask "claude-code"
 cask "font-hack-nerd-font"
 cask "font-plemol-jp"
 cask "font-plemol-jp-hs"
