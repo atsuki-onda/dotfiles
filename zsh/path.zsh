@@ -10,7 +10,10 @@
 if [ -z "${HOMEBREW_PREFIX:-}" ]; then
   for __brew in /opt/homebrew/bin/brew /usr/local/bin/brew; do
     if [ -x "$__brew" ]; then
-      eval "$("$__brew" shellenv)"
+      # brew は cwd が読めないと起動を拒否する。Finder やアプリから開いた
+      # ターミナルはそういう cwd になることがあるため、/ に移ってから呼ぶ。
+      # (サブシェル内の cd なので、このシェルの cwd は変わらない)
+      eval "$(cd / && "$__brew" shellenv)"
       break
     fi
   done
