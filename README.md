@@ -49,10 +49,10 @@ claude           # Claude Code の初回ログイン
 | ファイル | 内容 |
 |---|---|
 | `.zshrc` | zsh の対話シェル設定の目次（実体は `zsh/`） |
-| `.zprofile` | ログインシェル設定（PATH、Homebrew） |
+| `.zprofile` | ログインシェル設定（`zsh/path.zsh` を読むだけ） |
 | `.gitconfig` | Git のユーザー情報と credential helper |
 | `git/ignore` | グローバル gitignore（リンク先: `~/.config/git/`） |
-| `zsh/` | zsh の設定を機能ごとに分割したファイル群（リンク先: `~/.zsh`） |
+| `zsh/` | zsh の設定を機能ごとに分割したファイル群（リンク先: `~/.zsh`）。`path.zsh` は `.zprofile` と `.zshrc` の両方から読まれる |
 | `starship/starship.toml` | Starship プロンプトの設定（リンク先: `~/.config/`） |
 | `ghostty/config.ghostty` | Ghostty ターミナルの設定（リンク先: `~/Library/Application Support/com.mitchellh.ghostty/`） |
 | `claude/CLAUDE.md` | Claude Code のグローバル指示（リンク先: `~/.claude/`） |

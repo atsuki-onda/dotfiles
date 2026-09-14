@@ -1,5 +1,5 @@
 # .zshrc は読み込み専用の目次。実際の設定は ~/.zsh/ (= dotfiles/zsh/) に書く。
-source ~/.zsh/homebrew.zsh          # 必ず最初 (以降が $HOMEBREW_PREFIX を使う)
+source ~/.zsh/path.zsh              # 必ず最初 (以降が PATH と $HOMEBREW_PREFIX を使う)
 source ~/.zsh/ohmy.zsh
 source ~/.zsh/starship.zsh
 source ~/.zsh/prompt.zsh

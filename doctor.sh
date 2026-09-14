@@ -69,6 +69,21 @@ case "${SHELL:-}" in
   *)     ng "ログインシェルが zsh ではない (${SHELL:-unset}) → chsh -s /bin/zsh" ;;
 esac
 
+# 起動経路ごとにコマンドが引けるか。非ログインの対話シェルは .zprofile を読まないので、
+# PATH をそこだけに書いていると落ちる。実際に一度この穴を踏んでいる。
+check_shell() {
+  label="$1"
+  mode="$2"
+  if env -i HOME="$HOME" TERM=xterm PATH=/usr/bin:/bin /bin/zsh "$mode" \
+       'command -v claude >/dev/null && command -v starship >/dev/null' >/dev/null 2>&1; then
+    ok "${label}で claude / starship が引ける"
+  else
+    ng "${label}で claude / starship が引けない → zsh/path.zsh を確認"
+  fi
+}
+check_shell "ログインシェル" -lic
+check_shell "非ログインの対話シェル" -ic
+
 # --------------------------------------------------------- Claude Code ----
 step "Claude Code"
 CLAUDE_SETTINGS="$HOME/.claude/settings.json"
