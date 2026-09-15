@@ -1,6 +1,20 @@
 ---
 name: emil-design-eng
-description: This skill encodes Emil Kowalski's philosophy on UI polish, component design, animation decisions, and the invisible details that make software feel great.
+description: >-
+  Emil Kowalski の design engineering の考え方と判断フレームワーク。
+  「そもそもアニメーションすべきか」を**頻度**で決める (1 日 100 回触るものは
+  アニメーションしない) → 目的 → イージング → 尺、の順で決める枠組みを軸に、
+  spring、ボタンの押下感、トリガー起点で膨らむポップオーバー、@starting-style、
+  scale(0) から出さない理由、blur で粗を隠す、clip-path、ドラッグとジェスチャ
+  (慣性での dismiss・境界のダンピング・pointer capture)、WAAPI、
+  prefers-reduced-motion、スタガー、スローモーションでの検証までを扱う。
+  Use when: インタラクションを新しく作るとき / アニメーションの有無・カーブ・尺を
+  決めかねているとき / ドラッグ・スワイプで閉じる操作を組むとき / 「動きが安っぽい」
+  「もっと気持ちよくしたい」「Linear や Raycast みたいにしたい」と言われたとき /
+  how should this animate, what easing, does this need animation at all。
+  **必ず具体的な問いと一緒に呼ぶこと** — 問いが無いと定型の挨拶しか返さない。
+  NOT for: 既存 UI の値の監査と、角丸・影・アイコンの一貫性チェック
+  (use better-ui)。
 ---
 
 # Design Engineering

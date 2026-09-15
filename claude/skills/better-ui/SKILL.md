@@ -1,6 +1,20 @@
 ---
 name: better-ui
-description: Polishes and improves the UI in your project. Covers concentric border radius, optical alignment, surface depth, contextual icons, hit areas and more.
+description: >-
+  UI ポリッシュの監査と、具体値の正典。同心円角丸 (外側 = 内側 + パディング)、
+  光学的な位置合わせ、奥行きは影・構造は境界線、押下スケール 0.96、アイコンの
+  線幅と 1 枚の SVG の状態遷移、中断可能なアニメーション、入退場とスタガー、
+  テーマ切り替え時のトランジション抑止を、範囲ではなく**固定値**で規定する。
+  重大度 (HIGH / MEDIUM / LOW) つきの表で報告し Block / Approve で締める監査
+  手順も持つ。
+  Use when: 既存の UI をレビュー・監査するとき / 「見た目を整えて」「なんか
+  野暮ったい」「ちぐはぐ」「磨いて」と言われたとき / 角丸・余白・影・アイコン・
+  ホバー・押下の値を決める前や書き換える前 / polish the UI, audit the UI,
+  review this component, make this look better。
+  NOT for: 「そもそもアニメーションすべきか」「どのカーブ・どの尺か」「ドラッグや
+  スワイプをどう組むか」という**設計判断そのもの** (use emil-design-eng)。
+  タイポグラフィは better-typography、ヒット領域・フォーカス・ARIA は
+  better-accessibility、グルーピングと余白の設計は better-layout。
 ---
 
 # UI polish

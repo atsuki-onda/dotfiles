@@ -19,9 +19,8 @@ Claude Code から行う場合は、`~/dotfiles` を開いて「セットアッ�
 3. `brew bundle`（`Brewfile` のパッケージ一括インストール）
 4. Oh My Zsh の導入
 5. `install.sh`（`links.conf` に従ってシンボリックリンク）
-6. `~/.claude/settings.json` へ `claude/settings.base.json` をマージ
-7. Claude Code のプラグイン導入（`claude/plugins.txt`）
-8. `doctor.sh` による検証
+6. Claude Code のプラグイン導入（`claude/plugins.txt`）
+7. `doctor.sh` による検証
 
 すべて冪等。既存のファイルがある場合は `*.bak` として退避してからリンクを張る。
 
@@ -57,17 +56,24 @@ claude           # Claude Code の初回ログイン
 | `ghostty/config.ghostty` | Ghostty ターミナルの設定（リンク先: `~/Library/Application Support/com.mitchellh.ghostty/`） |
 | `claude/CLAUDE.md` | Claude Code のグローバル指示（リンク先: `~/.claude/`） |
 | `claude/statusline.sh` | Claude Code のステータスライン表示スクリプト（リンク先: `~/.claude/`） |
-| `claude/settings.base.json` | Claude Code の設定のうち dotfiles が管理するキー |
+| `claude/settings.json` | Claude Code の設定（リンク先: `~/.claude/`）。`hooks` を含めて丸ごと管理する |
 | `claude/plugins.txt` | Claude Code のプラグイン一覧 |
 | `claude/marketplaces.txt` | プラグインのマーケットプレイス一覧 |
 | `links.conf` | シンボリックリンクの定義（`install.sh` と `doctor.sh` が共有） |
 | `Brewfile` | Homebrew でインストールしているパッケージ一覧 |
 
-### 管理対象外
+### settings.json の扱い
 
-`~/.claude/settings.json` の `hooks` と `enabledPlugins` はツールが自動生成するため管理しない。
-`bootstrap.sh` は `claude/settings.base.json` のキーだけをマージし、それ以外の値はそのまま残す
-（元の内容は `settings.json.bak` に退避される）。
+`~/.claude/settings.json` は `claude/settings.json` へのシンボリックリンク。`hooks` や
+`enabledPlugins` を含めて丸ごと git 管理する。そのため次の 2 点に注意する。
+
+- Claude Code や Orca がこのファイルを書き換えると、そのままリポジトリの差分になる。
+  `git diff` に身に覚えのない変更が出たら、それはツールの自動更新である
+- `hooks` は Orca が生成したもので `${HOME}` 参照しか含まない。Orca が入っていない
+  マシンでも、hook 側がスクリプトの存在を確認してから実行するので害はない
+
+`claude/plugins.txt` は `enabledPlugins` と重複して見えるが役割が違う。設定キーを配るだけでは
+プラグインの実体は落ちてこないので、`bootstrap.sh` が `plugins.txt` を見てインストールする。
 
 ## 更新のしかた
 

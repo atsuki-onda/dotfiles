@@ -22,7 +22,7 @@ macOS の個人設定リポジトリ。`$HOME` 以下の設定ファイルをこ
 
 | スクリプト | 役割 |
 |---|---|
-| `bootstrap.sh` | 新しいマシン用のエントリポイント。CLT 確認 → Homebrew → `brew bundle` → Oh My Zsh → `install.sh` → Claude Code 設定 → プラグイン → `doctor.sh` |
+| `bootstrap.sh` | 新しいマシン用のエントリポイント。CLT 確認 → Homebrew → `brew bundle` → Oh My Zsh → `install.sh` → Claude Code → プラグイン → `doctor.sh` |
 | `install.sh` | `links.conf` に従ってシンボリックリンクを張るだけ |
 | `doctor.sh` | セットアップ結果の検証。不足があれば終了コード 1 |
 
@@ -47,10 +47,20 @@ macOS の個人設定リポジトリ。`$HOME` 以下の設定ファイルをこ
 |---|---|
 | 設定ファイル | `links.conf` |
 | Homebrew パッケージ | `Brewfile`（`brew bundle dump --file=Brewfile --force` で再生成） |
-| Claude Code の設定 | `claude/settings.base.json`（`{{HOME}}` がホームに展開される） |
+| Claude Code の設定 | `claude/settings.json`（`~/.claude/settings.json` へのリンク。絶対パスは `$HOME` で書く） |
 | Claude Code のプラグイン | `claude/plugins.txt`（マーケットプレイスは `claude/marketplaces.txt`） |
 
-## 管理対象外
+## settings.json の扱い
 
-`~/.claude/settings.json` のうち `hooks` と `enabledPlugins` はツールが自動生成するため管理しない。
-`bootstrap.sh` は `claude/settings.base.json` のキーだけを既存ファイルにマージし、それ以外は温存する。
+`~/.claude/settings.json` は `claude/settings.json` へのシンボリックリンク。`hooks` や
+`enabledPlugins` も含めて丸ごと管理するので、次の点に注意する。
+
+- **Claude Code や Orca が書き換えると、そのままリポジトリの差分になる**。`git diff` に
+  身に覚えのない変更が出たら、それはツールの自動更新。捨てるか取り込むかを判断する
+- **絶対パスは書かない**。リンク管理では `{{HOME}}` のようなテンプレート展開が効かない。
+  `statusLine.command` はシェル経由で実行されるので `$HOME/...` と書く
+- `hooks` は Orca が生成する。`${HOME}` 参照しか含まず、hook 側がスクリプトの存在を
+  確認してから実行するので、Orca が無いマシンでも害はない
+
+`claude/plugins.txt` は `enabledPlugins` と重複して見えるが役割が違う。設定キーを配るだけでは
+プラグインの実体は落ちてこないので、`bootstrap.sh` が `plugins.txt` を見てインストールする。

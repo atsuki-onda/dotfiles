@@ -74,3 +74,53 @@
 - `brew bundle` は `--no-upgrade` で実行する。セットアップは不足分の導入のみを行い、
   既存パッケージの更新はしない(更新は `brew upgrade` を明示的に叩く)
 - `jq` は macOS 15 以降なら `/usr/bin/jq` があるが、古い macOS を考慮して Brewfile に入れた
+
+---
+
+# settings.json を丸ごとリンク管理に切り替え
+
+**2026-09-15 / 依頼: 「claude の settings.json もドットファイルに入れてほしい」**
+
+## 経緯
+
+調査の結果、`~/.claude/settings.json` の中身は既にすべて管理下にあった
+（`settings.base.json` + `plugins.txt` + `marketplaces.txt`）。足りなかったのは
+**リポジトリへの書き戻し**で、`/config` などで設定を変えても dotfiles に反映されなかった。
+
+方式を 2 つ提示し、「丸ごとリンク管理」が選ばれた。
+
+## タスク
+
+- [x] `claude/settings.json` を追加（現行の `~/.claude/settings.json` を丸ごと）
+- [x] `statusLine.command` の絶対パスを `$HOME/.claude/statusline.sh` に置換
+- [x] `links.conf` に 1 行追加
+- [x] `bootstrap.sh` のセクション 7（jq マージ）を削除、以降の番号を繰り上げ
+- [x] `doctor.sh` の包含チェックを JSON 妥当性チェックに置換
+- [x] `claude/settings.base.json` を削除
+- [x] `CLAUDE.md` / `README.md` を更新
+- [x] 実機で検証
+
+## レビュー
+
+### 検証したこと
+
+ドキュメントに書かれていない挙動が 2 つあったので、どちらも実測した。
+
+| 確かめたこと | 方法 | 結果 |
+|---|---|---|
+| `statusLine.command` で `$HOME` が展開されるか | `sh -c 'echo {} \| $HOME/.claude/statusline.sh'` | 展開される。終了コード 0 で描画も正常。公式ドキュメントにも「command はシェル経由で実行される」と明記 |
+| Claude Code の書き込みがリンクを壊さないか | `claude plugin disable/enable swift-lsp` で往復 | **リンクは保持され、リポジトリ側のファイルが直接書き換わった**。往復後の md5 は完全一致 |
+| 他キーが書き込みで失われないか | 同上 | `$HOME` 表記を含め全キーが保持された |
+
+加えて `sh -n` で全スクリプトの構文チェック、`./doctor.sh` は「問題なし」（終了コード 0）。
+
+### この方式のトレードオフ
+
+- **利点**: 書き戻しの仕組みが要らない。設定を変えればそのまま `git diff` に出る
+- **欠点**: Claude Code や Orca の自動更新がそのままリポジトリの差分になる。
+  `hooks`（Orca 生成・約 37KB）が変わるたびにノイズが出る
+
+### 注意点
+
+リンク管理では `{{HOME}}` のようなテンプレート展開が効かない。`settings.json` に
+絶対パスを書くときは `$HOME` を使う（シェルが解釈するキーに限る）。

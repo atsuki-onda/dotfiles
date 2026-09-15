@@ -109,40 +109,7 @@ else
   fi
 fi
 
-# ----------------------------------------------- 7. Claude Code 設定 ----
-step "Claude Code の設定 (~/.claude/settings.json)"
-CLAUDE_SETTINGS="$HOME/.claude/settings.json"
-CLAUDE_BASE="$DOTFILES_DIR/claude/settings.base.json"
-if ! command -v jq >/dev/null 2>&1; then
-  record_failure "jq が無いため settings.json をマージできない (brew install jq)"
-elif [ ! -f "$CLAUDE_BASE" ]; then
-  record_failure "$CLAUDE_BASE が見つからない"
-else
-  mkdir -p "$HOME/.claude"
-  [ -f "$CLAUDE_SETTINGS" ] || echo '{}' > "$CLAUDE_SETTINGS"
-
-  MERGED="$(mktemp)"
-  # 既存の設定 (hooks・enabledPlugins などツールが自動生成する値) を土台に、
-  # dotfiles が管理するキーだけを上書きする。{{HOME}} は実際のホームに展開する。
-  if jq -s --arg home "$HOME" '
-        (.[0] * .[1])
-        | walk(if type == "string" then gsub("\\{\\{HOME\\}\\}"; $home) else . end)
-      ' "$CLAUDE_SETTINGS" "$CLAUDE_BASE" > "$MERGED"; then
-    if cmp -s "$MERGED" "$CLAUDE_SETTINGS"; then
-      info "変更なし"
-      rm -f "$MERGED"
-    else
-      cp "$CLAUDE_SETTINGS" "$CLAUDE_SETTINGS.bak"
-      mv "$MERGED" "$CLAUDE_SETTINGS"
-      info "マージ完了 (元の設定は settings.json.bak に退避)"
-    fi
-  else
-    rm -f "$MERGED"
-    record_failure "settings.json のマージに失敗した (JSON が壊れている可能性)"
-  fi
-fi
-
-# --------------------------------------------- 8. Claude Code プラグイン ----
+# --------------------------------------------- 7. Claude Code プラグイン ----
 step "Claude Code のプラグイン"
 if ! command -v claude >/dev/null 2>&1; then
   record_failure "claude コマンドが無いためプラグインを導入できない"
@@ -167,10 +134,10 @@ else
   done < "$DOTFILES_DIR/claude/plugins.txt"
 fi
 
-# ------------------------------------------------------------- 9. 検証 ----
+# ------------------------------------------------------------- 8. 検証 ----
 "$DOTFILES_DIR/doctor.sh" || true
 
-# ------------------------------------------------------------ 10. 結果 ----
+# ------------------------------------------------------------- 9. 結果 ----
 step "残りの手作業"
 cat <<'MANUAL'
     以下は認証が必要なため自動化できない。必要になったときに実行する。

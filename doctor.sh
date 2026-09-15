@@ -86,22 +86,15 @@ check_shell "非ログインの対話シェル" -ic
 
 # --------------------------------------------------------- Claude Code ----
 step "Claude Code"
-CLAUDE_SETTINGS="$HOME/.claude/settings.json"
-CLAUDE_BASE="$DOTFILES_DIR/claude/settings.base.json"
+# settings.json がリンクされているかは上のリンク検証が見ている。ここでは中身が
+# JSON として読めるかだけを確かめる。壊れていると Claude Code が丸ごと無視する。
+CLAUDE_SETTINGS="$DOTFILES_DIR/claude/settings.json"
 if ! command -v jq >/dev/null 2>&1; then
   ng "jq が無いため settings.json を検証できない"
-elif [ ! -f "$CLAUDE_SETTINGS" ]; then
-  ng "$CLAUDE_SETTINGS が無い"
+elif jq -e . "$CLAUDE_SETTINGS" >/dev/null 2>&1; then
+  ok "settings.json は妥当な JSON"
 else
-  # base の全キーが実際の settings.json に反映されているか (包含関係) を見る
-  if jq -e -s --arg home "$HOME" '
-        (.[1] | walk(if type == "string" then gsub("\\{\\{HOME\\}\\}"; $home) else . end)) as $want
-        | (.[0] * $want) == .[0]
-      ' "$CLAUDE_SETTINGS" "$CLAUDE_BASE" >/dev/null 2>&1; then
-    ok "settings.json に dotfiles の設定が反映されている"
-  else
-    ng "settings.json が settings.base.json と一致しない → ./bootstrap.sh"
-  fi
+  ng "$CLAUDE_SETTINGS が JSON として壊れている"
 fi
 
 if [ -x "$HOME/.claude/statusline.sh" ]; then
