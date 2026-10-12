@@ -301,7 +301,7 @@ __tf="$(__fmt_token_full "$__t")"
 __emit '' "$__uf/$__tf ($__p%)"
 __emit '' ' '
 __v="$(__field 'context_window.used_percentage')"
-__bar_out="$(__bar "$__v" 20 '▓' '░')"
+__bar_out="$(__bar "$__v" 10 '▓' '░')"
 __emit '39' "$__bar_out"
 __emit '' '   '
 __emit '39;49' '5h: '
