@@ -129,10 +129,18 @@ __bar() {
   if [ "$p" -gt 100 ]; then p=100; fi
   n=$(( (p * width + 50) / 100 ))
   e=$((width - n))
+  # Filled part is colored by usage: green < 50%, yellow < 80%, red otherwise.
+  # The empty part is dimmed so the filled part stands out.
+  local color
+  if [ "$p" -ge 80 ]; then color='38;2;220;80;80'
+  elif [ "$p" -ge 50 ]; then color='38;2;230;190;70'
+  else color='38;2;80;190;120'; fi
   local out=""
   for ((i=0; i<n; i++)); do out+="$filled"; done
+  __emit "$color" "$out"
+  out=""
   for ((i=0; i<e; i++)); do out+="$empty"; done
-  printf '%s' "$out"
+  __emit '90' "$out"
 }
 __git_branch() {
   local cwd dir
@@ -238,13 +246,13 @@ __rel_time() {
   now=$(__tick)
   diff=$((t_int - now))
   if [ "$diff" -le 0 ]; then printf ''; return; fi
-  if [ "$diff" -lt 60 ]; then printf 'T-%ds' "$diff"; return; fi
+  if [ "$diff" -lt 60 ]; then printf '%ds' "$diff"; return; fi
   if [ "$diff" -lt 3600 ]; then
     m=$((diff/60)); s=$((diff%60))
-    printf 'T-%dm%02ds' "$m" "$s"; return
+    printf '%dm%02ds' "$m" "$s"; return
   fi
   h=$((diff/3600)); rem=$(((diff%3600)/60))
-  printf 'T-%dh%02dm' "$h" "$rem"
+  printf '%dh%02dm' "$h" "$rem"
 }
 __emit '1;97;48;2;54;54;54' ' '
 __v="$(__field 'model.display_name')"
@@ -292,18 +300,18 @@ __uf="$(__fmt_token_full "$__u")"
 __tf="$(__fmt_token_full "$__t")"
 __emit '' "$__uf/$__tf ($__p%)"
 __emit '' ' '
-__emit '39' '['
 __v="$(__field 'context_window.used_percentage')"
 __bar_out="$(__bar "$__v" 20 '▓' '░')"
 __emit '39' "$__bar_out"
-__emit '39' ' ]'
-__reset
-printf '\n'
-__reset
+__emit '' '   '
 __emit '39;49' '5h: '
 __v="$(__fmt_pct "$(__field 'rate_limits.five_hour.used_percentage')")"
 __emit '39;49' "$__v"
 __emit '39;49' '% '
+if [ -n "$__v" ]; then
+  __emit '39;49' "$(__bar "$__v" 10 '▓' '░')"
+  __emit '39;49' ' '
+fi
 __v="$(__field 'rate_limits.five_hour.resets_at')"
 __out="$(__rel_time "$__v")"
 __emit '39;49' "$__out"
@@ -313,6 +321,10 @@ __emit '39;49' ' 7d: '
 __v="$(__fmt_pct "$(__field 'rate_limits.seven_day.used_percentage')")"
 __emit '39;49' "$__v"
 __emit '39;49' '% '
+if [ -n "$__v" ]; then
+  __emit '39;49' "$(__bar "$__v" 10 '▓' '░')"
+  __emit '39;49' ' '
+fi
 __v="$(__field 'rate_limits.seven_day.resets_at')"
 __out="$(__rel_time "$__v")"
 __emit '39;49' "$__out"
